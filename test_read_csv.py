@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
 
 df = pd.read_csv('../Students Social Media Addiction.csv')
 
@@ -49,7 +50,11 @@ scaler = StandardScaler()
 scaled_data = scaler.fit_transform(cdf)
 
 kmeans = KMeans(n_clusters=3, random_state=42)
-cdf['Cluster'] = kmeans.fit_predict(scaled_data)
+cluster_labels = kmeans.fit_predict(scaled_data)
+cdf['Cluster'] = cluster_labels
+
+sil_score = silhouette_score(scaled_data, cluster_labels)
+print(f"Silhouette Score: {sil_score:.4f}")
 
 plt.figure(figsize=(10,6))
 scatter = plt.scatter(cdf['Age'], cdf['Avg_Daily_Usage_Hours'], c=cdf['Cluster'], cmap='viridis')
